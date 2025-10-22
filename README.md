@@ -6,7 +6,14 @@ This project demonstrates a human-in-the-loop confirmation flow for an AI agent.
 
 1. Install the dependencies:
 
+2. Create a `.env` file in the root of the project and add the model you want to use:
+   ```
+   MODEL_NAME=gemini-1.0-pro
+   ```
+
    ```bash
+   python -m venv .venv
+   source .venv/bin/activate
    pip install -r requirements.txt
    ```
 

@@ -1,4 +1,5 @@
 fastapi
 uvicorn
 gradio
-google-generativeai
+google-cloud-aiplatform>=1.5.0
+python-dotenv
