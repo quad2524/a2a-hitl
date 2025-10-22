@@ -33,7 +33,7 @@ with gr.Blocks() as demo:
         history.append({"role": "assistant", "content": agent_response['response']})
 
         show_buttons = agent_response.get("confirmation_required", False)
-        
+        # Hi
         return history, gr.update(visible=show_buttons), gr.update(visible=show_buttons)
 
     msg.submit(user, [msg, chatbot], [msg, chatbot], queue=False).then(
@@ -48,4 +48,5 @@ with gr.Blocks() as demo:
         handle_denial, chatbot, [chatbot, approve_button, deny_button]
     )
 
-demo.launch()
+if __name__ == "__main__":
+    demo.launch()

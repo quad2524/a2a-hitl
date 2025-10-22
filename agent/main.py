@@ -62,13 +62,11 @@ async def ask(request: AskRequest):
     history = request.history
     user_query = history[-1]['content']
 
-    if "cut hair" in user_query.lower():
-        return {"response": "This action requires confirmation.", "confirmation_required": True}
-
     # Define the tools for the Vertex AI model by wrapping the Python functions
     tools = Tool.from_function_declarations([
         FunctionDeclaration.from_func(roll_die),
         FunctionDeclaration.from_func(is_prime),
+        FunctionDeclaration.from_func(cut_hair),
     ])
     model_name = os.getenv("MODEL_NAME", "gemini-1.0-pro")
     system_instruction = (
@@ -102,7 +100,9 @@ async def ask(request: AskRequest):
             function_name = function_call.name
             function_args = {key: value for key, value in function_call.args.items()}
 
-            if function_name == "roll_die":
+            if function_name == "cut_hair":
+                return {"response": "This action requires confirmation.", "confirmation_required": True}
+            elif function_name == "roll_die":
                 api_response = roll_die(**function_args)
             elif function_name == "is_prime":
                 api_response = is_prime(**function_args)
