@@ -11,11 +11,11 @@ def handle_approval(history):
     response = requests.post(f"{AGENT_URL}/execute_task", json={"task": "cut_hair"})
     data = response.json()
     history.append({"role": "assistant", "content": data['response']})
-    return history, gr.update(visible=False), gr.update(visible=False)
+    return history, gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
 
 def handle_denial(history):
     history.append({"role": "assistant", "content": "Okay, I won't do that."})
-    return history, gr.update(visible=False), gr.update(visible=False)
+    return history, gr.update(visible=False), gr.update(visible=False), gr.update(visible=True)
 
 with gr.Blocks() as demo:
     gr.Markdown("# Human-in-the-Loop Agent Demo")
@@ -34,18 +34,18 @@ with gr.Blocks() as demo:
 
         show_buttons = agent_response.get("confirmation_required", False)
         # Hi
-        return history, gr.update(visible=show_buttons), gr.update(visible=show_buttons)
+        return history, gr.update(visible=show_buttons), gr.update(visible=show_buttons), gr.update(visible=not show_buttons)
 
     msg.submit(user, [msg, chatbot], [msg, chatbot], queue=False).then(
-        bot, chatbot, [chatbot, approve_button, deny_button]
+        bot, chatbot, [chatbot, approve_button, deny_button, msg]
     ).then(lambda: "", None, msg, queue=False)
 
     approve_button.click(
-        handle_approval, chatbot, [chatbot, approve_button, deny_button]
+        handle_approval, chatbot, [chatbot, approve_button, deny_button, msg]
     )
 
     deny_button.click(
-        handle_denial, chatbot, [chatbot, approve_button, deny_button]
+        handle_denial, chatbot, [chatbot, approve_button, deny_button, msg]
     )
 
 if __name__ == "__main__":
