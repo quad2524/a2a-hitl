@@ -6,14 +6,34 @@ import random
 import os
 import vertexai
 from dotenv import load_dotenv
-from vertexai.generative_models import GenerativeModel, Part, Tool, FunctionDeclaration, Content
+from vertexai.generative_models import GenerativeModel as RealGenerativeModel, Part, Tool, FunctionDeclaration, Content
 load_dotenv()
 
 # --- Configure the generative model ---
 # Initialize Vertex AI. It will use your default GCP project and credentials.
 # You can explicitly set the project and location like this:
 # vertexai.init(project="your-gcp-project-id", location="us-central1")
-vertexai.init()
+class MockGenerativeModel:
+    def __init__(self, model_name, tools, system_instruction):
+        pass
+
+    def start_chat(self, history):
+        class MockChat:
+            def send_message(self, user_query):
+                class MockResponse:
+                    @property
+                    def text(self):
+                        return "You rolled a 10"
+                return MockResponse()
+        return MockChat()
+
+if os.getenv("MOCK_VERTEXAI") == "true":
+    GenerativeModel = MockGenerativeModel
+    print("Using Mock Generative Model")
+else:
+    GenerativeModel = RealGenerativeModel
+    vertexai.init()
+    print("Using Real Generative Model")
 
 app = FastAPI()
 
