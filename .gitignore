@@ -2,3 +2,8 @@
 .env
 
 __pycache__/
+
+# Test artifacts
+backend_test.log
+frontend_test.log
+verification.png
